@@ -26,7 +26,7 @@ def create_inmueble(nombre: str,
                     pais: str) -> Inmueble:
     inmueble = Inmueble()
     inmueble.fecha_registro = datetime.datetime.now()
-    inmueble.nombre = nombre;
+    inmueble.nombre = nombre
     inmueble.m2_terreno = m2_terreno
     inmueble.m2_construccion = m2_construccion
     inmueble.niveles = niveles
