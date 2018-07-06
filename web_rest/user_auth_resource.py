@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from models import UserModel, RevokedTokenModel
+from data_auth.models import UserModel, RevokedTokenModel
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
                                 jwt_required,
@@ -9,6 +9,8 @@ from flask_jwt_extended import (create_access_token,
 parser = reqparse.RequestParser()
 parser.add_argument('username', help='This field cannot be blank', required=True)
 parser.add_argument('password', help='This field cannot be blank', required=True)
+parser.add_argument('firstName')
+parser.add_argument('lastName')
 
 
 class UserRegistration(Resource):
@@ -20,7 +22,9 @@ class UserRegistration(Resource):
 
         new_user = UserModel(
             username=data['username'],
-            password=UserModel.generate_hash(data['password'])
+            password=UserModel.generate_hash(data['password']),
+            firstName=data['firstName'],
+            lastName=data['lastName']
         )
 
         try:
@@ -41,18 +45,31 @@ class UserLogin(Resource):
         data = parser.parse_args()
         current_user = UserModel.find_by_username(data['username'])
         if not current_user:
-            return {'message': 'User {} doesn\'t exists'.format(data['username'])}
+            return {'message': 'User {} doesn\'t exists'.format(data['username'])}, 401
 
         if UserModel.verify_hash(data['password'], current_user.password):
             access_token = create_access_token(identity=data['username'])
             refresh_token = create_refresh_token(identity=data['username'])
             return {
-                'message': 'Logged in as {}'.format(current_user.password),
+                'message': 'Logged in as {}'.format(current_user.username),
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }
         else:
-            return {'message': 'Wrong credentials'}
+            return {'message': 'Wrong credentials'}, 401
+
+
+class UserAccount(Resource):
+    @jwt_required
+    def get(self):
+        current_user = get_jwt_identity()
+        user = UserModel.find_by_username(current_user)
+        ret_user = {
+            'username': user.username,
+            'firstName': user.firstName,
+            'lastName': user.lastName
+        }
+        return ret_user
 
 
 class UserLogoutAccess(Resource):
@@ -93,11 +110,3 @@ class AllUsers(Resource):
 
     def delete(self):
         return UserModel.delete_all()
-
-
-class SecretResource(Resource):
-    @jwt_required
-    def get(self):
-        return {
-            'answer': 42
-        }

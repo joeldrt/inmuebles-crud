@@ -1,8 +1,6 @@
 import mongoengine
 import datetime
 
-from data.direcciones import Direccion
-
 import data.mongo_digiall_utils as mongo_utils
 
 
@@ -22,10 +20,18 @@ class Inmueble(mongoengine.Document):
 
     descripcion = mongoengine.StringField()
 
-    precio_venta = mongoengine.DecimalField()
-    precio_renta = mongoengine.DecimalField()
+    precio_venta = mongoengine.FloatField()
+    precio_renta = mongoengine.FloatField()
 
-    direccion = mongoengine.EmbeddedDocumentField(Direccion)
+    calle = mongoengine.StringField(required=True)
+    num_exterior = mongoengine.StringField()
+    num_interior = mongoengine.StringField()
+    colonia = mongoengine.StringField()
+    municipio = mongoengine.StringField()
+    estado = mongoengine.StringField()
+    pais = mongoengine.StringField()
+
+    tags = mongoengine.ListField()
 
     def to_dict(self):
         return mongo_utils.mongo_to_dict(self)

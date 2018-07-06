@@ -29,19 +29,25 @@ def check_if_token_in_blacklist(decrypted_token):
     return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
 
-from web_rest import user_auth_resource, inmueble_resource
-import models
+from web_rest import user_auth_resource, inmueble_resource, foto_resource
+from data_auth import models
 
-api.add_resource(user_auth_resource.UserRegistration, '/registration')
-api.add_resource(user_auth_resource.UserLogin, '/login')
-api.add_resource(user_auth_resource.UserLogoutAccess, '/logout/access')
-api.add_resource(user_auth_resource.UserLogoutRefresh, '/logout/refresh')
-api.add_resource(user_auth_resource.TokenRefresh, '/token/refresh')
-api.add_resource(user_auth_resource.AllUsers, '/users')
-api.add_resource(user_auth_resource.SecretResource, '/secret')
+api.add_resource(user_auth_resource.UserRegistration, '/api/registration')
+api.add_resource(user_auth_resource.UserLogin, '/api/login')
+api.add_resource(user_auth_resource.UserAccount, '/api/account')
+api.add_resource(user_auth_resource.UserLogoutAccess, '/api/logout/access')
+api.add_resource(user_auth_resource.UserLogoutRefresh, '/api/logout/refresh')
+api.add_resource(user_auth_resource.TokenRefresh, '/api/token/refresh')
+api.add_resource(user_auth_resource.AllUsers, '/api/users')
 
-api.add_resource(inmueble_resource.InmuebleAgregar, '/inmueble')
-api.add_resource(inmueble_resource.ObtenerTodosLosInmuebles, '/inmuebles')
+api.add_resource(inmueble_resource.AgregarInmueble, '/api/inmueble')
+api.add_resource(inmueble_resource.ObtenerTodosLosInmuebles, '/api/inmueble')
+api.add_resource(inmueble_resource.BorrarInmueble, '/api/inmueble/<string:inmueble_id>')
+api.add_resource(inmueble_resource.EditarInmueble, '/api/inmueble')
+
+api.add_resource(foto_resource.FotoCollection, '/api/foto')
+api.add_resource(foto_resource.FotoItem, '/api/foto/<string:foto_id>')
+api.add_resource(foto_resource.FotoItemByInmueble, '/api/fotos_inmueble/<string:inmueble_id>')
 
 
 @app.before_first_request

@@ -3,27 +3,27 @@ from typing import List
 import datetime
 
 from data.inmuebles import Inmueble
-from data.direcciones import Direccion
 
 
-def create_inmueble(nombre: str,
-                    m2_terreno: float,
-                    m2_construccion: float,
-                    niveles: int,
-                    recamaras: int,
-                    banos: float,
-                    cajones_estacionamiento: int,
-                    amenidades: str,
-                    descripccion: str,
-                    precio_venta: float,
-                    precio_renta: float,
-                    calle: str,
-                    num_exterior: str,
-                    num_interior: str,
-                    colonia: str,
-                    municipio: str,
-                    estado: str,
-                    pais: str) -> Inmueble:
+def persist_inmueble(nombre: str,
+                     m2_terreno: float,
+                     m2_construccion: float,
+                     niveles: int,
+                     recamaras: int,
+                     banos: float,
+                     cajones_estacionamiento: int,
+                     amenidades: str,
+                     descripccion: str,
+                     precio_venta: float,
+                     precio_renta: float,
+                     calle: str,
+                     num_exterior: str,
+                     num_interior: str,
+                     colonia: str,
+                     municipio: str,
+                     estado: str,
+                     pais: str,
+                     inmueble_id: str) -> Inmueble:
     inmueble = Inmueble()
     inmueble.fecha_registro = datetime.datetime.now()
     inmueble.nombre = nombre
@@ -38,16 +38,14 @@ def create_inmueble(nombre: str,
     inmueble.precio_venta = precio_venta
     inmueble.precio_renta = precio_renta
 
-    direccion = Direccion()
-    direccion.calle = calle
-    direccion.num_exterior = num_exterior
-    direccion.num_interior = num_interior
-    direccion.colonia = colonia
-    direccion.municipio = municipio
-    direccion.estado = estado
-    direccion.pais = pais
-
-    inmueble.direccion = direccion
+    inmueble.calle = calle
+    inmueble.num_exterior = num_exterior
+    inmueble.num_interior = num_interior
+    inmueble.colonia = colonia
+    inmueble.municipio = municipio
+    inmueble.estado = estado
+    inmueble.pais = pais
+    inmueble.id = inmueble_id
 
     inmueble.save()
 
@@ -60,3 +58,8 @@ def get_all_inmuebles() -> List[Inmueble]:
         for inmueble in Inmueble.objects().all()
     ]
     return inmuebles
+
+
+def get_inmueble_by_id(inmueble_id: str) -> Inmueble:
+    inmueble = Inmueble.objects().get(id=inmueble_id)
+    return inmueble
