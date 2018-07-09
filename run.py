@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 
 import data.mongo_setup as mongo_setup
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 CORS(app)
 api = Api(app)
 
@@ -30,6 +30,7 @@ def check_if_token_in_blacklist(decrypted_token):
 
 
 from web_rest import user_auth_resource, inmueble_resource, foto_resource
+from web_static import static_file_server
 from data_auth import models
 
 api.add_resource(user_auth_resource.UserRegistration, '/api/registration')
@@ -45,9 +46,11 @@ api.add_resource(inmueble_resource.ObtenerTodosLosInmuebles, '/api/inmueble')
 api.add_resource(inmueble_resource.BorrarInmueble, '/api/inmueble/<string:inmueble_id>')
 api.add_resource(inmueble_resource.EditarInmueble, '/api/inmueble')
 
-api.add_resource(foto_resource.FotoCollection, '/api/foto')
-api.add_resource(foto_resource.FotoItem, '/api/foto/<string:foto_id>')
-api.add_resource(foto_resource.FotoItemByInmueble, '/api/fotos_inmueble/<string:inmueble_id>')
+# api.add_resource(foto_resource.FotoCollection, '/api/foto')
+# api.add_resource(foto_resource.FotoItem, '/api/foto/<string:foto_id>')
+# api.add_resource(foto_resource.FotoItemByInmueble, '/api/fotos_inmueble/<string:inmueble_id>')
+
+api.add_resource(static_file_server.UploadFoto, '/api/foto/upload')
 
 
 @app.before_first_request

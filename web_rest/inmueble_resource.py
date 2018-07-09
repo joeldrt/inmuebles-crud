@@ -48,7 +48,7 @@ class AgregarInmueble(Resource):
                                                 municipio=data['municipio'],
                                                 estado=data['estado'],
                                                 pais=data['pais'],
-                                                id=None)
+                                                inmueble_id=None)
 
         if new_inmueble:
             return new_inmueble.to_dict()

@@ -5,10 +5,10 @@ from flask_jwt_extended import (jwt_required, get_jwt_identity)
 from services import foto_service, inmueble_service
 
 parser = reqparse.RequestParser()
-parser.add_argument('nombre', help='El campo no puede ser vacío', required=True, type=str)
-parser.add_argument('data_base_64', help='El campo no puede ser vacío', required=True, type=str)
-parser.add_argument('content_type', help='El campo no puede ser vacío', required=True, type=str)
-parser.add_argument('inmueble_id', help='El campo no puede ser vacío', required=True, type=str)
+parser.add_argument('nombre', help='El campo no puede ser o estar vacío', required=True, type=str)
+parser.add_argument('data_base_64', help='El campo no puede ser o estar vacío', required=True, type=str)
+parser.add_argument('content_type', help='El campo no puede ser o estar vacío', required=True, type=str)
+parser.add_argument('inmueble_id', help='El campo no puede ser o estar vacío', required=True, type=str)
 
 
 class FotoCollection(Resource):

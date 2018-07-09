@@ -31,7 +31,9 @@ class Inmueble(mongoengine.Document):
     estado = mongoengine.StringField()
     pais = mongoengine.StringField()
 
-    tags = mongoengine.ListField()
+    tags = mongoengine.ListField(mongoengine.StringField(), default=[])
+
+    fotos = mongoengine.ListField(mongoengine.StringField(), default=[])
 
     def to_dict(self):
         return mongo_utils.mongo_to_dict(self)
