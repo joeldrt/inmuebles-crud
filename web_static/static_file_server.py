@@ -28,7 +28,7 @@ class UploadFoto(Resource):
         def switch_filetype(argument: str):
             switcher = {
                 'image/gif': 'gif',
-                'image/jpeg': 'jpeg',
+                'image/jpeg': 'jpg',
                 'image/jpg': 'jpg',
                 'image/png': 'png',
                 'image/svg+xml': 'svg'
@@ -45,7 +45,7 @@ class UploadFoto(Resource):
 
         data_hash = encryp_string(base64_data)
 
-        os.makedirs('static/{}'.format(inmueble_id, data_hash), exist_ok=True)
+        os.makedirs('static/{}'.format(inmueble_id), exist_ok=True)
 
         img = open('static/{}/{}.{}'.format(inmueble_id, data_hash, extension), 'wb')
         img.write(base64.decodebytes(base64_data.encode()))

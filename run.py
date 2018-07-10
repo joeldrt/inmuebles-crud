@@ -5,8 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 
 import data.mongo_setup as mongo_setup
+import logging
 
 app = Flask(__name__, static_url_path='/static')
+handler = logging.FileHandler('inmuebles-crud.log')
+handler.setLevel(logging.DEBUG)
+app.logger.addHandler(handler)
+
 CORS(app)
 api = Api(app)
 
