@@ -1,6 +1,8 @@
 from flask import send_from_directory
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
+
+from data.inmuebles import Inmueble
 from run import app
 import base64
 import hashlib
@@ -58,3 +60,21 @@ class UploadFoto(Resource):
             inmueble.update(push__fotos=saved_file_name)
 
         return {'message': saved_file_name}
+
+
+class DeleteFoto(Resource):
+    @jwt_required
+    def delete(self, inmueble_id, foto_path):
+        try:
+            inmueble = inmueble_service.get_inmueble_by_id(inmueble_id)
+            listafotos = list(inmueble.fotos)
+            listafotos.remove(foto_path)
+            inmueble.fotos = listafotos
+            inmueble.save()
+        except Inmueble.DoesNotExist as e:
+            return {'message': e.args[0]}, 404
+        try:
+            os.remove('static/{}/{}'.format(inmueble_id, foto_path))
+        except OSError as ose:
+            return {'message': ose.args[0]}, 500
+        return {'message': 'foto: {} - DELETED'.format(foto_path)}

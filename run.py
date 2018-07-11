@@ -34,7 +34,7 @@ def check_if_token_in_blacklist(decrypted_token):
     return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
 
-from web_rest import user_auth_resource, inmueble_resource, foto_resource
+from web_rest import user_auth_resource, inmueble_resource
 from web_static import static_file_server
 from data_auth import models
 
@@ -51,11 +51,8 @@ api.add_resource(inmueble_resource.ObtenerTodosLosInmuebles, '/api/inmueble')
 api.add_resource(inmueble_resource.BorrarInmueble, '/api/inmueble/<string:inmueble_id>')
 api.add_resource(inmueble_resource.EditarInmueble, '/api/inmueble')
 
-# api.add_resource(foto_resource.FotoCollection, '/api/foto')
-# api.add_resource(foto_resource.FotoItem, '/api/foto/<string:foto_id>')
-# api.add_resource(foto_resource.FotoItemByInmueble, '/api/fotos_inmueble/<string:inmueble_id>')
-
 api.add_resource(static_file_server.UploadFoto, '/api/foto/upload')
+api.add_resource(static_file_server.DeleteFoto, '/api/foto/delete/<string:inmueble_id>/<string:foto_path>')
 
 
 @app.before_first_request
