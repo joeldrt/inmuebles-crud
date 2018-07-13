@@ -29,6 +29,7 @@ parser.add_argument('estado')
 parser.add_argument('pais')
 parser.add_argument('tags', type=list, help='No se pudo convertir la lista')
 parser.add_argument('fotos', type=list, help='No se pudo convertir la lista')
+parser.add_argument('status', type=int, help='No se pudo convertir el valor enviado')
 
 
 class AgregarInmueble(Resource):
@@ -61,6 +62,7 @@ class AgregarInmueble(Resource):
                                                 pais=data['pais'],
                                                 tags=data['tags'],
                                                 fotos=data['fotos'],
+                                                status=data['status'],
                                                 inmueble_id=None)
 
         if new_inmueble:
@@ -121,6 +123,7 @@ class EditarInmueble(Resource):
         inmueble.municipio = data['municipio']
         inmueble.estado = data['estado']
         inmueble.pais = data['pais']
+        inmueble.status = data['status']
 
         edited_inmueble = inmueble.save()
 

@@ -35,6 +35,8 @@ class Inmueble(mongoengine.Document):
 
     fotos = mongoengine.ListField(mongoengine.StringField(), default=[])
 
+    status = mongoengine.IntField(required=True, default=0)
+
     def to_dict(self):
         return mongo_utils.mongo_to_dict(self)
 

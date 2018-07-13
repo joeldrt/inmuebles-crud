@@ -25,6 +25,7 @@ def persist_inmueble(nombre: str,
                      pais: str,
                      tags: list,
                      fotos: list,
+                     status: int,
                      inmueble_id: any) -> Inmueble:
     inmueble = Inmueble()
     inmueble.fecha_registro = datetime.datetime.now()
@@ -47,10 +48,11 @@ def persist_inmueble(nombre: str,
     inmueble.municipio = municipio
     inmueble.estado = estado
     inmueble.pais = pais
-    inmueble.id = inmueble_id
-
     inmueble.tags = tags
     inmueble.fotos = fotos
+    inmueble.status = status
+
+    inmueble.id = inmueble_id
 
     inmueble.save()
 
