@@ -27,8 +27,8 @@ parser.add_argument('colonia')
 parser.add_argument('municipio')
 parser.add_argument('estado')
 parser.add_argument('pais')
-parser.add_argument('tags', type=list, help='No se pudo convertir la lista')
-parser.add_argument('fotos', type=list, help='No se pudo convertir la lista')
+parser.add_argument('tags', action='append')
+parser.add_argument('fotos', action='append')
 parser.add_argument('status', type=int, help='No se pudo convertir el valor enviado')
 
 

@@ -34,6 +34,17 @@ def check_if_token_in_blacklist(decrypted_token):
     return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
 
+@jwt.user_claims_loader
+def add_claims_to_access_token(user):
+    roles = [role.role_name for role in user.roles]
+    return {'roles': roles}
+
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.username
+
+
 from web_rest import user_auth_resource, inmueble_resource
 from web_static import static_file_server
 from data_auth import models
@@ -45,6 +56,8 @@ api.add_resource(user_auth_resource.UserLogoutAccess, '/api/logout/access')
 api.add_resource(user_auth_resource.UserLogoutRefresh, '/api/logout/refresh')
 api.add_resource(user_auth_resource.TokenRefresh, '/api/token/refresh')
 api.add_resource(user_auth_resource.AllUsers, '/api/users')
+api.add_resource(user_auth_resource.DeleteUser, '/api/users/<string:username>')
+api.add_resource(user_auth_resource.ChangePassword, '/api/change_password')
 
 api.add_resource(inmueble_resource.AgregarInmueble, '/api/inmueble')
 api.add_resource(inmueble_resource.ObtenerTodosLosInmuebles, '/api/inmueble')
@@ -55,7 +68,32 @@ api.add_resource(static_file_server.UploadFoto, '/api/foto/upload')
 api.add_resource(static_file_server.DeleteFoto, '/api/foto/delete/<string:inmueble_id>/<string:foto_path>')
 
 
+def init_database_values():
+    role1 = models.RoleModel(role_name='admin')
+    role2 = models.RoleModel(role_name='user')
+    role3 = models.RoleModel(role_name='guest')
+
+    db.session.add(role1)
+    db.session.add(role2)
+    db.session.add(role3)
+    db.session.commit()
+
+    admin = models.UserModel(
+        username='admin',
+        password=models.UserModel.generate_hash('admin'),
+        firstName='Administrator'
+    )
+
+    admin.roles.append(role1)
+    admin.roles.append(role2)
+
+    admin.save_to_db()
+
+
 @app.before_first_request
 def create_tables():
     db.create_all()
     mongo_setup.global_init()
+
+    if not models.UserModel.find_by_username('admin'):
+        init_database_values()
