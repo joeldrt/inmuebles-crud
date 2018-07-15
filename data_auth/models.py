@@ -21,6 +21,10 @@ class RoleModel(db.Model):
     def find_by_role_name(cls, role_name):
         return cls.query.filter_by(role_name=role_name).first()
 
+    @classmethod
+    def return_all(cls):
+        return [role.role_name for role in RoleModel.query.all()]
+
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -55,7 +59,7 @@ class UserModel(db.Model):
                 'lastName': x.lastName,
                 'roles': [role.role_name for role in x.roles]
             }
-        return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
+        return list(map(lambda x: to_json(x), UserModel.query.all()))
 
     # @classmethod
     # def delete_all(cls):

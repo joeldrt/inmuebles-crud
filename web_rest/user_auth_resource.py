@@ -42,12 +42,12 @@ class UserRegistration(Resource):
 
         try:
             new_user.save_to_db()
-            access_token = create_access_token(identity=new_user)
-            refresh_token = create_refresh_token(identity=new_user)
+            # access_token = create_access_token(identity=new_user)
+            # refresh_token = create_refresh_token(identity=new_user)
             return {
-                'message': 'User {} was created'.format(new_user.username),
-                'access_token': access_token,
-                'refresh_token': refresh_token
+                'message': 'User {} was created'.format(new_user.username)
+                # 'access_token': access_token,
+                # 'refresh_token': refresh_token
             }
         except:
             return {'message': 'Something went wrong'}, 500
@@ -119,7 +119,7 @@ class TokenRefresh(Resource):
         return {'access_token': access_token}
 
 
-class AllUsers(Resource):
+class GetAllUsers(Resource):
     @jwt_required
     def get(self):
         claims = get_jwt_claims()
@@ -128,6 +128,58 @@ class AllUsers(Resource):
             return {'message': 'You dont have persmision to perform this operation'}, 401
 
         return UserModel.return_all()
+
+
+class EditUser(Resource):
+    @jwt_required
+    def put(self):
+        current_username = get_jwt_identity()
+        claims = get_jwt_claims()
+
+        data = parser.parse_args()
+
+        if not data['username']:
+            return {'message': 'Missing parameters'}, 403
+
+        if data['username'] != current_username and 'admin' not in claims['roles']:
+            return {'message': 'You dont have persmision to perform this operation'}, 401
+
+        user_to_edit = UserModel.find_by_username(data['username'])
+
+        if not user_to_edit:
+            return {'message': 'User {} doesn\'t exists'.format(data['username'])}, 401
+
+        if 'admin' in claims['roles'] and data['username'] != current_username:
+            user_to_edit.roles = []
+            try:
+                user_to_edit.save_to_db
+            except:
+                return {'message': 'Something went wrong trying to save roles'}, 500
+
+            for role in data['roles']:
+                user_to_edit_role = RoleModel.find_by_role_name(role)
+                if user_to_edit_role:
+                    user_to_edit.roles.append(user_to_edit_role)
+
+        user_to_edit.firstName = data['firstName']
+        user_to_edit.lastName = data['lastName']
+
+        try:
+            user_to_edit.save_to_db()
+            return {'message': 'User {} was edited'.format(user_to_edit.username)}
+        except:
+            return {'message': 'Something went wrong'}, 500
+
+
+class AllRoles(Resource):
+    @jwt_required
+    def get(self):
+        claims = get_jwt_claims()
+
+        if 'admin' not in claims['roles']:
+            return {'message': 'You dont have persmision to perform this operation'}, 401
+
+        return RoleModel.return_all()
 
 
 class DeleteUser(Resource):
@@ -179,6 +231,32 @@ class ChangePassword(Resource):
 
         user.password = UserModel.generate_hash(data['password'])
 
+        try:
+            user.save_to_db()
+            return {'message': 'Password for user {} successfully changed'.format(user.username)}
+        except:
+            return {'message': 'Something went wrong'}, 500
+
+
+class AdminChangePassword(Resource):
+    @jwt_required
+    def post(self):
+        claims = get_jwt_claims()
+
+        if 'admin' not in claims['roles']:
+            return {'message': 'You dont have persmision to perform this operation'}, 401
+
+        data = parser.parse_args()
+
+        if not data['username'] or not data['password']:
+            return {'message': 'Imposible to perform operation... missing parameters'}, 400
+
+        user = UserModel.find_by_username(data['username'])
+
+        if not user:
+            return {'message': 'User {} doesn\'t exists'.format(data['username'])}, 401
+
+        user.password = UserModel.generate_hash(data['password'])
         try:
             user.save_to_db()
             return {'message': 'Password for user {} successfully changed'.format(user.username)}
