@@ -67,8 +67,9 @@ api.add_resource(inmueble_resource.ObtenerTodosLosInmuebles, '/api/inmueble')
 api.add_resource(inmueble_resource.BorrarInmueble, '/api/inmueble/<string:inmueble_id>')
 api.add_resource(inmueble_resource.EditarInmueble, '/api/inmueble')
 
-api.add_resource(static_file_server.UploadFoto, '/api/foto/upload')
+api.add_resource(static_file_server.UploadFotos, '/api/foto/upload')
 api.add_resource(static_file_server.DeleteFoto, '/api/foto/delete/<string:inmueble_id>/<string:foto_path>')
+api.add_resource(static_file_server.UpdateFotoList, '/api/foto/update_list')
 
 
 def init_database_values():
