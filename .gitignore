@@ -20,3 +20,5 @@ static/
 templates/
 web_rest/__pycache__/
 web_static/__pycache__/
+
+venv/
